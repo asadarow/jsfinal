@@ -67,8 +67,8 @@ function closeMenu() {
 
 
 console.clear();
-var path = "jiji";
-var UID = "BIjsJ95UFOcuAi0s85Yq6IlkDsB3";
+var path = "jiji"; // const UID = "BIjsJ95UFOcuAi0s85Yq6IlkDsB3";
+
 var base = "https://livejs-api.hexschool.io";
 var pdlist = document.querySelector(".productWrap");
 var data = []; // 取得商品列表
@@ -188,21 +188,50 @@ var deleteAll = function deleteAll() {
 }; // 送出購買訂單
 
 
-var sendOrder = function sendOrder() {
+var orderForm = document.querySelector(".orderInfo-form");
+var fname = document.querySelector("#customerName");
+var ftel = document.querySelector("#customerPhone");
+var fmail = document.querySelector("#customerEmail");
+var fadr = document.querySelector("#customerAddress");
+var fpay = document.querySelector("#tradeWay");
+var fbtn = document.querySelector(".orderInfo-btn");
+fbtn.addEventListener('click', function (e) {
+  if (fname.value.length < 1) {
+    alert("請填寫姓名");
+  } else if (ftel.value.length < 1) {
+    alert("請填寫電話");
+  } else if (fmail.value < 1) {
+    alert("請輸入Email");
+  } else if (fadr.value < 1) {
+    alert("請輸入寄送地址");
+  } else {
+    var sname = fname.value;
+    var stel = ftel.value;
+    var smail = fmail.value;
+    var sadr = fadr.value;
+    var spay = fpay.value;
+    sendOrder(sname, stel, smail, sadr, spay);
+  }
+});
+
+var sendOrder = function sendOrder(fname, ftel, femail, faddress, fpayment) {
   axios.post("".concat(base, "/api/livejs/v1/customer/").concat(path, "/orders"), {
     data: {
       user: {
-        name: "六角學院",
-        tel: "07-5313506",
-        email: "hexschool@hexschool.com",
-        address: "高雄市六角學院路",
-        payment: "Apple Pay"
+        name: fname,
+        tel: ftel,
+        email: femail,
+        address: faddress,
+        payment: fpayment
       }
     }
   }).then(function (response) {
     console.log(response.data);
+    cartList();
+    orderForm.reset();
+    alert("寄送成功!");
   })["catch"](function (error) {
-    console.log(error.response.data);
+    alert(error.response.data.message);
   });
 };
 //# sourceMappingURL=all.js.map
