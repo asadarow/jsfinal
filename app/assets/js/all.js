@@ -61,7 +61,7 @@ function closeMenu() {
 // 自己寫的------------------------------------------------------------------
 console.clear();
 const path = "jiji";
-const UID = "BIjsJ95UFOcuAi0s85Yq6IlkDsB3";
+// const UID = "BIjsJ95UFOcuAi0s85Yq6IlkDsB3";
 const base = "https://livejs-api.hexschool.io";
 
 const pdlist = document.querySelector(".productWrap");
@@ -223,23 +223,51 @@ const deleteAll = () => {
 };
 
 // 送出購買訂單
-const sendOrder = () => {
+const orderForm = document.querySelector(".orderInfo-form");
+const fname =document.querySelector("#customerName");
+const ftel =document.querySelector("#customerPhone");
+const fmail = document.querySelector("#customerEmail");
+const fadr = document.querySelector("#customerAddress");
+const fpay= document.querySelector("#tradeWay");
+const fbtn = document.querySelector(".orderInfo-btn");
+fbtn.addEventListener('click',function(e){
+  if(fname.value.length<1){
+    alert("請填寫姓名");
+  }else if(ftel.value.length<1){
+    alert("請填寫電話");
+  }else if(fmail.value<1){
+    alert("請輸入Email");
+  }else if(fadr.value<1){
+    alert("請輸入寄送地址");
+  }else{
+    let sname=fname.value;
+    let stel=ftel.value;
+    let smail=fmail.value;
+    let sadr=fadr.value;
+    let spay=fpay.value;
+    sendOrder(sname,stel,smail,sadr,spay);
+  }
+})
+const sendOrder = (fname,ftel,femail,faddress,fpayment) => {
   axios
     .post(`${base}/api/livejs/v1/customer/${path}/orders`, {
       data: {
         user: {
-          name: "六角學院",
-          tel: "07-5313506",
-          email: "hexschool@hexschool.com",
-          address: "高雄市六角學院路",
-          payment: "Apple Pay",
+          name: fname,
+          tel: ftel,
+          email: femail,
+          address: faddress,
+          payment: fpayment,
         },
       },
     })
     .then(function (response) {
       console.log(response.data);
+      cartList();
+      orderForm.reset();  
+      alert("寄送成功!");
     })
     .catch(function (error) {
-      console.log(error.response.data);
+      alert(error.response.data.message);
     });
 };
